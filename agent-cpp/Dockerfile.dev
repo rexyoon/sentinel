@@ -1,0 +1,15 @@
+# 개발용 리눅스 툴체인 이미지.
+# 소스는 이미지에 COPY하지 않고 '실행할 때 마운트'한다.
+# 왜? 코드를 한 줄 고칠 때마다 이미지를 다시 굽는 낭비를 피하려고.
+# 이미지 = 컴파일러가 깔린 빈 작업대, 소스 = 그때그때 올리는 재료.
+FROM ubuntu:24.04
+
+# --no-install-recommends: 꼭 필요한 것만 설치해 이미지를 가볍게.
+# rm -rf .../lists: 설치 후 apt 캐시를 지워 이미지 용량을 줄인다 (도커 관용구).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        ninja-build \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work

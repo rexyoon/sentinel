@@ -3,6 +3,7 @@
 
 # --- agent-cpp ---
 agent-cpp/build/
+agent-cpp/build-linux/
 
 # --- server-kotlin ---
 server-kotlin/build/
