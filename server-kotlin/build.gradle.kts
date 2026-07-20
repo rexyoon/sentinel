@@ -23,6 +23,13 @@ dependencies {
     // kotlinx.serialization: 프레임 본문 JSON 파싱.
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
+    // ── Phase 4: REST API (대시보드에 지표 제공) ──
+    // ContentNegotiation + kotlinx-json: 응답 객체를 JSON으로 자동 변환.
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    // CORS: 대시보드(다른 포트 5173)에서 이 서버(8082)를 호출할 수 있게 허용.
+    implementation("io.ktor:ktor-server-cors:$ktorVersion")
+
     // ── Phase 3: 저장 ──
     // Exposed: Kotlin ORM. exposed-jdbc(실행) + java-time(timestamp 매핑)까지.
     val exposedVersion = "0.50.1"

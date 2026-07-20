@@ -1,10 +1,16 @@
 package com.sentinel
 
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -42,11 +48,24 @@ fun main() {
 }
 
 fun Application.module() {
+    // 응답 객체(LatestEntry 등)를 JSON으로 자동 직렬화한다.
+    install(ContentNegotiation) { json() }
+
+    // 대시보드는 5173, 이 서버는 8082 — 출처가 달라서(cross-origin) 브라우저가 막는다.
+    // CORS로 "다른 출처의 호출을 허용"한다. (학습용이라 anyHost, 운영이면 좁혀야 함)
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+    }
+
     routing {
         get("/health") {
-            // Phase 0에서는 직렬화 라이브러리 없이 JSON 문자열을 직접 반환한다.
-            // kotlinx.serialization은 실제 DTO가 생기는 Phase 2에서 도입 예정.
             call.respondText("""{"status":"ok"}""", ContentType.Application.Json)
+        }
+
+        // 모든 지표의 최신값 (Redis에서). call.respond 가 객체를 JSON으로 바꿔 보낸다.
+        get("/api/latest") {
+            call.respond(Cache.getAllLatest())
         }
     }
 }
