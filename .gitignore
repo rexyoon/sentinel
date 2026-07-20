@@ -1,0 +1,20 @@
+# --- 시크릿 ---
+.env
+
+# --- agent-cpp ---
+agent-cpp/build/
+
+# --- server-kotlin ---
+server-kotlin/build/
+server-kotlin/.gradle/
+
+# --- dashboard-web ---
+dashboard-web/node_modules/
+dashboard-web/dist/
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
