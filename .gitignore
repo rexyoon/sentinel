@@ -1,21 +1,18 @@
 # --- 시크릿 ---
 .env
 
-# --- agent-cpp ---
-agent-cpp/build/
-agent-cpp/build-linux/
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
 
-# --- server-kotlin ---
-server-kotlin/build/
-server-kotlin/.gradle/
-
-# --- dashboard-web ---
-dashboard-web/node_modules/
-dashboard-web/dist/
+# --- 산출물 (에이전트가 생성) ---
+output/
 
 # --- IDE / OS ---
 .idea/
 .vscode/
-*.iml
 .DS_Store
 Thumbs.db

@@ -1,69 +1,27 @@
-# 파수꾼 (Sentinel)
+# AI 회사 (작은 SI 팀)
 
-AI 인프라 모니터링 시스템 — C++ 경량 에이전트가 서버 지표를 수집해 자체 TCP 프로토콜로
-Kotlin(Ktor) 중앙 서버에 전송하고, LLM이 이상 징후를 한국어로 분석해 Discord로 알린다.
+역할을 맡은 AI 에이전트들이 협업해, 고객의 프로젝트 의뢰 한 줄을
+소프트웨어 산출물(요구사항 정의 → 코드)로 만들어내는 멀티 에이전트 시스템.
 
-## 저장소 구조
-
-| 디렉터리 | 설명 | 스택 |
-|---|---|---|
-| `agent-cpp/` | 지표 수집 에이전트 | C++17, CMake |
-| `server-kotlin/` | 수집 서버 + REST/WebSocket API | Kotlin, Ktor 2.x |
-| `dashboard-web/` | 웹 대시보드 | React, TypeScript, Vite |
-| `docs/` | 기획서, 프로토콜 명세, ADR | — |
+```
+고객 의뢰  ──▶  기획자(PM)  ──▶  개발자  ──▶  산출물
+"할 일 앱"      요구사항 정의     코드        (문서 + 코드)
+```
 
 ## 사전 준비
+- Python 3.11+
+- (마지막 단계) Anthropic API 키 → `.env` 에 `ANTHROPIC_API_KEY`
 
-- Docker (PostgreSQL 16 + Redis 7 로컬 인프라)
-- JDK 17+ (server-kotlin)
-- CMake ≥3.20 + C++17 컴파일러 (agent-cpp)
-- Node.js 18+ (dashboard-web)
-
+## 설치
 ```bash
-# 최초 1회: 환경 변수 파일 생성
-cp .env.example .env   # 값을 원하는 대로 수정
+python -m venv .venv
+.venv\Scripts\activate      # Windows PowerShell: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+cp .env.example .env         # 키는 나중에 채움
 ```
 
-## 실행 방법
-
-### 0. 로컬 인프라 (PostgreSQL + Redis)
-
-```bash
-docker compose up -d
-docker compose ps        # 두 컨테이너가 healthy 인지 확인
-```
-
-### 1. agent-cpp
-
-```bash
-cd agent-cpp
-cmake -B build
-cmake --build build
-./build/sentinel-agent   # → "hello sentinel"
-```
-
-### 2. server-kotlin
-
-```bash
-cd server-kotlin
-./gradlew run            # Windows: gradlew.bat run
-# 다른 터미널에서:
-curl http://localhost:8080/health   # → {"status":"ok"}
-```
-
-> 기본 포트는 8080이며, 이미 사용 중이면 `SERVER_PORT` 환경 변수로 변경한다.
-> 예: `SERVER_PORT=8081 ./gradlew run`
-
-### 3. dashboard-web
-
-```bash
-cd dashboard-web
-npm install
-npm run dev              # → http://localhost:5173
-```
-
-## 개발 규칙
-
-- 커밋 컨벤션: `feat/fix/docs/refactor/chore(모듈): 설명` — 예: `feat(agent): cpu collector`
-- main 직접 커밋 금지, phase별 브랜치 사용 (예: `phase1/agent-mvp`)
-- 시크릿은 `.env` 로만 관리 (`.env.example` 만 커밋)
+## 로드맵
+1. 기획자(PM) 에이전트 — 의뢰 → 요구사항 정의
+2. 개발자 에이전트 + 인수인계
+3. 오케스트레이터(매니저)
+4. API 키 연결 후 실제 구동

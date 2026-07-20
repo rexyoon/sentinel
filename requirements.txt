@@ -1,0 +1,5 @@
+# Claude(Anthropic) SDK — 에이전트의 두뇌(LLM)를 호출한다.
+anthropic>=0.40.0
+
+# .env 파일에서 ANTHROPIC_API_KEY 를 읽어오기 위한 도구.
+python-dotenv>=1.0.0
