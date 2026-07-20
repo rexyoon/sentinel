@@ -22,6 +22,17 @@ dependencies {
     implementation("io.ktor:ktor-network:$ktorVersion")
     // kotlinx.serialization: 프레임 본문 JSON 파싱.
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // ── Phase 3: 저장 ──
+    // Exposed: Kotlin ORM. exposed-jdbc(실행) + java-time(timestamp 매핑)까지.
+    val exposedVersion = "0.50.1"
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
+    implementation("org.postgresql:postgresql:42.7.3")   // JDBC 드라이버
+    implementation("com.zaxxer:HikariCP:5.1.0")           // 커넥션 풀
+    implementation("redis.clients:jedis:5.1.0")           // Redis 최신값 캐시
+
     // Ktor는 SLF4J로 로그를 남긴다. 구현체(logback)가 없으면 로그가 통째로 사라진다.
     implementation("ch.qos.logback:logback-classic:1.4.14")
 

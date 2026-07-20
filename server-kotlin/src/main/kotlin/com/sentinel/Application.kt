@@ -21,6 +21,17 @@ fun main() {
     val httpPort = System.getenv("SERVER_PORT")?.toIntOrNull() ?: 8080
     val ingestPort = System.getenv("INGEST_PORT")?.toIntOrNull() ?: 9400
 
+    // 저장소 초기화. 기본값은 이 머신의 호스트 포트(.env: 5433/6380)에 맞춘다.
+    Persistence.init(
+        jdbcUrl = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5433/sentinel",
+        user = System.getenv("DB_USER") ?: "sentinel",
+        password = System.getenv("DB_PASSWORD") ?: "sentinel-dev-2026",
+    )
+    Cache.init(
+        host = System.getenv("REDIS_HOST") ?: "localhost",
+        port = System.getenv("REDIS_PORT")?.toIntOrNull() ?: 6380,
+    )
+
     // 지표 수신 TCP 서버를 백그라운드 코루틴으로 띄운다.
     // (아래 HTTP 서버가 wait=true 로 메인 스레드를 잡으므로, TCP는 별도로 돌려야 한다.)
     val scope = CoroutineScope(Dispatchers.IO)

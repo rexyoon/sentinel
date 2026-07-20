@@ -66,8 +66,13 @@ private suspend fun handleConnection(socket: Socket) {
             input.readFully(payload)
 
             val snapshot = json.decodeFromString<MetricSnapshot>(payload.decodeToString())
+
+            // 저장(과거 이력) + 캐시(최신값). 블로킹 호출이지만 여기는 IO 디스패처.
+            Persistence.save(snapshot)
+            Cache.setLatest(snapshot)
+
             val summary = snapshot.metrics.joinToString("  ") { "${it.name}=${it.value}%" }
-            log.info("[{}] ts={} {}", snapshot.host, snapshot.ts, summary)
+            log.info("[{}] ts={} {} (stored)", snapshot.host, snapshot.ts, summary)
         }
     } catch (e: Exception) {
         // EOF(에이전트가 연결 종료)도 예외로 온다 — 정상적인 흐름으로 취급.
