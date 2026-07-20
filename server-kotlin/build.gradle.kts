@@ -1,8 +1,8 @@
-// Phase 0: Ktor(Netty) 최소 구성. /health 하나만 서빙한다.
-// 왜 의존성을 이렇게 적게 잡았나: 학습 목적상 "지금 필요한 것"만 넣고,
-// DB(Exposed)/직렬화(kotlinx.serialization)는 실제로 쓰는 Phase에서 추가한다.
+// Ktor(Netty) 서버 + Phase 2에서 추가된 자체 TCP 지표 수신부.
 plugins {
     kotlin("jvm") version "1.9.24"
+    // JSON 직렬화: @Serializable 데이터 클래스 ↔ JSON 변환 코드를 컴파일 타임에 생성.
+    kotlin("plugin.serialization") version "1.9.24"
     application
 }
 
@@ -18,6 +18,10 @@ val ktorVersion = "2.3.12"
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    // ktor-network: 코루틴 기반 raw TCP 소켓 (HTTP가 아닌 자체 프로토콜 수신용).
+    implementation("io.ktor:ktor-network:$ktorVersion")
+    // kotlinx.serialization: 프레임 본문 JSON 파싱.
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Ktor는 SLF4J로 로그를 남긴다. 구현체(logback)가 없으면 로그가 통째로 사라진다.
     implementation("ch.qos.logback:logback-classic:1.4.14")
 

@@ -12,4 +12,11 @@ docker build -t $Image -f "$Here\Dockerfile.dev" $Here
 
 # 2) 소스를 마운트해 컨테이너 안에서 빌드+실행.
 #    build-linux/ 는 Windows용 build/ 와 분리한다 (OS별 오브젝트 파일 혼용 방지).
-docker run --rm -v "${Here}:/work" -w /work $Image bash -c "cmake -B build-linux -G Ninja && cmake --build build-linux && ./build-linux/sentinel-agent"
+#    -e ...: 컨테이너 속 에이전트가 호스트에서 도는 서버(9400)로 지표를 보내도록 지정.
+#    host.docker.internal = 컨테이너에서 '호스트 머신'을 가리키는 이름. 서버가 안 떠 있으면
+#    에이전트는 "-> (offline)" 로 표시하며 계속 돈다(치명적 아님).
+docker run --rm `
+    -e SENTINEL_SERVER_HOST=host.docker.internal `
+    -e SENTINEL_SERVER_PORT=9400 `
+    -v "${Here}:/work" -w /work $Image `
+    bash -c "cmake -B build-linux -G Ninja && cmake --build build-linux && ./build-linux/sentinel-agent"

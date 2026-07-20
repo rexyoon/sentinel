@@ -22,7 +22,12 @@ docker build -t "$IMAGE" -f "$HERE_WIN/Dockerfile.dev" "$HERE_WIN"
 #    build-linux/ 를 Windows용 build/ 와 분리하는 이유:
 #    컴파일 결과물(오브젝트 파일)은 OS마다 형식이 달라서, 두 OS 것이
 #    한 폴더에 섞이면 링크가 깨진다.
-docker run --rm -v "$HERE_WIN:/work" -w /work "$IMAGE" bash -c "\
+#    -e ...: 컨테이너 속 에이전트가 호스트에서 도는 서버(9400)로 지표를 보내도록 지정.
+#    서버가 안 떠 있으면 에이전트는 "-> (offline)" 로 표시하며 계속 돈다(치명적 아님).
+docker run --rm \
+    -e SENTINEL_SERVER_HOST=host.docker.internal \
+    -e SENTINEL_SERVER_PORT=9400 \
+    -v "$HERE_WIN:/work" -w /work "$IMAGE" bash -c "\
     cmake -B build-linux -G Ninja && \
     cmake --build build-linux && \
     ./build-linux/sentinel-agent"
