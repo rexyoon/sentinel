@@ -13,8 +13,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)  # -std=gnu++17 이 아닌 순수 -std=c++17 사용
 
-add_executable(sentinel-agent src/main.cpp)
-
+add_executable(sentinel-agent
+        src/main.cpp
+        src/cpu_collector.cpp)
 # 경고를 에러 수준으로 올려서 습관을 잡는다 (학습 목적).
 if(MSVC)
   target_compile_options(sentinel-agent PRIVATE /W4)
