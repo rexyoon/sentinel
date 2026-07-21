@@ -1,5 +1,9 @@
-# Claude(Anthropic) SDK — 에이전트의 두뇌(LLM)를 호출한다.
+# Claude(Anthropic) SDK — 기획자(PM) 에이전트의 두뇌.
 anthropic>=0.40.0
+
+# OpenAI SDK — 디자이너 에이전트(Codex 계열)의 두뇌.
+# Kimi(Moonshot)도 OpenAI 호환이라 이 SDK로 base_url만 바꿔 쓴다.
+openai>=1.40.0
 
 # .env 파일에서 ANTHROPIC_API_KEY 를 읽어오기 위한 도구.
 python-dotenv>=1.0.0
